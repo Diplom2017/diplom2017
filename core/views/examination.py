@@ -17,6 +17,20 @@ from core.models import (
 from random import random, shuffle
 
 
+class UserExaminationListView(ListView):
+    model = UserExamination
+    context_object_name = 'user_examinations'
+    template_name = 'core/user_examinations.html'
+    title = 'Список пройденных тестирований'
+
+    def get_queryset(self):
+        qs = super(UserExaminationListView, self).get_queryset()
+        if not self.request.user.is_superuser or not self.request.user.is_staff:
+            qs.filter(user=self.request.user)
+        return qs
+user_examination_list_view = UserExaminationListView.as_view()
+
+
 class UserExaminationProcessView(TemplateView):
     _user_examination = None
     _user_examination_question_log = None
@@ -153,14 +167,14 @@ user_examination_process_view = UserExaminationProcessView.as_view()
 
 class UserExaminationDetailView(DetailView):
     model = UserExamination
-    pk_url_kwarg = 'examination_id'
+    pk_url_kwarg = 'user_examination_id'
     context_object_name = 'user_examination'
     template_name = 'core/examination_detail.html'
     _question_log_qs = None
     _answer_log_qs = None
 
     def get_queryset(self):
-        if self.request.user.is_superuser or self.request.user.is_staff:  # todo is_staff and department owner
+        if self.request.user.is_superuser or self.request.user.is_staff:
             return super(UserExaminationDetailView, self).get_queryset()
         else:
             return UserExamination.get_for_user(self.request.user)

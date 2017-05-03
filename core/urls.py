@@ -9,7 +9,8 @@ urlpatterns = [
 
     url(r'^(?P<examination_id>\d+)/$', examination.user_examination_process_view, name='user_examination_answer_view'),
     url(r'^(?P<examination_id>\d+)/(?P<user_examination_question_log_id>\d+)/$', examination.user_examination_process_view, name='user_examination_answer_view'),
-    url(r'^view/(?P<examination_id>\d+)/$', examination.user_examination_detail_view, name='user_examination_detail_view'),
+    url(r'^view/$', examination.user_examination_list_view, name='user_examination_list_view'),
+    url(r'^view/(?P<user_examination_id>\d+)/$', examination.user_examination_detail_view, name='user_examination_detail_view'),
 
     url(r'^adm/examination/(?P<examination_id>\d+)/questions/(?P<question_id>\d+)/answer/(?P<answer_id>\d+)/delete/$', management_examinations.question_answer_delete_view, name='question_answer_delete_view'),
     url(r'^adm/examination/(?P<examination_id>\d+)/questions/(?P<question_id>\d+)/answer/(?P<answer_id>\d+)/$', management_examinations.question_answer_create_or_update_view, name='question_answer_update_view'),

@@ -2,6 +2,8 @@
 
 {% block content %}
 
+    {% load core %}
+
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
@@ -14,21 +16,15 @@
         </thead>
     <tbody>
 
-        <tr class="{{ user_examination.get_status_color }}">
+        <tr>
             <td>
-                {{ user_examination.started_at|default:'Не начато' }}
+                {{ user_examination.started_at }}
             </td>
             <td>
-                {{ user_examination.finished_at|default:'Не закончено' }}
+                {{ user_examination.finished_at }}
             </td>
             <td>
-                {% if not user_examination.finished_at %}
-                    <abbr style="color: lightgray" title="Баллы начисляются только после прохождения тестирования">
-                        {{ user_examination.points }}/100
-                    </abbr>
-                {% else %}
-                    {{ user_examination.points }}/100
-                {% endif %}
+                {{ user_examination.points }}/100
             </td>
             <td>
                 {{ user_examinations_stats.right_answers_count }}
@@ -58,11 +54,6 @@
 
     {% else %}
         <h3>Просмотр результатов недоступен</h3>
-        {% if user_examination.finished_at %}
-            <h4>Истекло время просмотра</h4>
-        {% else %}
-            <h4>Тест еще не закончен</h4>
-        {% endif %}
     {% endif %}
 
     <hr/>

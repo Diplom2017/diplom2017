@@ -146,6 +146,10 @@ class UserExamination(models.Model):
         return instance
 
     @classmethod
+    def get_for_user(cls, user, **kwargs):
+        return cls.objects.filter(user=user, **kwargs)
+
+    @classmethod
     def fixed_started(cls):
         for user_examination_id in UserExamination.objects.filter(finished_at__isnull=True).values_list('id', flat=True):
             cls.fixed_started_one(user_examination_id)
