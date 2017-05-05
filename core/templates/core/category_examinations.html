@@ -10,22 +10,21 @@
         <thead>
             <tr>
                 <th>Название</th>
-                <th>Категория</th>
                 <th>Время на прохождение</th>
                 <th>Кол-во вопросов</th>
-                <th>Действие</th>
+                <th>Пройти тест</th>
             </tr>
         </thead>
         <tbody>
+
+        {% load core %}
+
 
         {% for examination in examinations %}
 
             <tr>
                 <td>
                     {{ examination.name }}
-                </td>
-                <td>
-                    {{ examination.category }}
                 </td>
                 <td>
                     {{ examination.minutes_to_pass }}
@@ -41,32 +40,8 @@
                            Начать
                     </a>
                 </td>
-
             </tr>
 
-        {% endfor %}
-
-        {% for user_examinations in tested_user_examinations %}
-            <tr>
-                <td>
-                    {{ user_examinations.examination.name }}
-                </td>
-                <td>
-                    {{ user_examinations.examination.category }}
-                </td>
-                <td>
-                    {{ user_examinations.examination.minutes_to_pass }}
-                </td>
-                <td>
-                    {{ user_examinations.examination.questions.count }}
-                </td>
-                <td>
-                    <a class="btn btn-warning center-block"
-                               href="{% url 'user_examination_detail_view' user_examinations.id %}">
-                               Посмотреть результаты
-                    </a>
-                </td>
-            </tr>
         {% endfor %}
         </tbody>
     </table>

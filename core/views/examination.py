@@ -74,7 +74,7 @@ class UserExaminationProcessView(TemplateView):
             if next_log_id is None:
                 user_examination.finish()
                 messages.success(request, 'Тестирование %s завершено.' % user_examination.examination.name)
-                redirect_to = redirect(reverse('category_list_view'))
+                redirect_to = redirect(reverse('examination_list_view'))
             else:
                 redirect_to = redirect(reverse(user_examination_process_view, args=[user_examination.examination_id, next_log_id]))
             return redirect_to

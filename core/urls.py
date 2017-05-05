@@ -4,8 +4,9 @@ from core.views import category, examinations, examination
 from core.views.management import management_examinations
 
 urlpatterns = [
+    url(r'^$', examinations.examination_list_view, name='examination_list_view'),
     url(r'^categories/$', category.category_list_view, name='category_list_view'),
-    url(r'^categories/(?P<category_id>\d+)/$', examinations.examination_list_view, name='examination_list_view'),
+    url(r'^categories/(?P<category_id>\d+)/$', category.category_examinations_list_view, name='category_examinations_list_view'),
 
     url(r'^(?P<examination_id>\d+)/$', examination.user_examination_process_view, name='user_examination_answer_view'),
     url(r'^(?P<examination_id>\d+)/(?P<user_examination_question_log_id>\d+)/$', examination.user_examination_process_view, name='user_examination_answer_view'),

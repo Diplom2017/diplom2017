@@ -181,7 +181,7 @@ class UserExamination(models.Model):
         if self.finished_at is None:
             return False
 
-        deadline_dt = self.finished_at + datetime.timedelta(hours=1)  # TODO
+        deadline_dt = self.finished_at + datetime.timedelta(hours=1)
         return datetime.datetime.now() < deadline_dt
 
     def finish(self, force=False):
@@ -204,7 +204,6 @@ class UserExamination(models.Model):
     def calculate_points(self, force=False, commit=True):
         assert self.finished_at
 
-        # dont allow recalculate points, if already exists(user exam was finished)
         if not force:
             assert self.points == 0
 
