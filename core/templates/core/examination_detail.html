@@ -7,30 +7,19 @@
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th>Начато</th>
-                <th>Закончено</th>
-                <th>Баллы</th>
-                <th>Правильные</th>
-                <th>Не правильные</th>
+                <th>Дата прохождения</th>
+                <th>Кол-во баллов</th>
             </tr>
         </thead>
     <tbody>
 
         <tr>
-            <td>
-                {{ user_examination.started_at }}
-            </td>
+
             <td>
                 {{ user_examination.finished_at }}
             </td>
             <td>
-                {{ user_examination.points }}/100
-            </td>
-            <td>
-                {{ user_examinations_stats.right_answers_count }}
-            </td>
-            <td>
-                {{ user_examinations_stats.invalid_answers_count }}
+                {{ user_examination.points }}
             </td>
         </tr>
 
@@ -38,23 +27,17 @@
     </table>
     <hr/>
 
-    {% if can_view_logs %}
 
-        <h3>Ответы пользователя</h3>
+    <h3>Ответы пользователя</h3>
 
-        {% for question in question_log %}
-            <hr/>
-            <h5>{{ question.question_data.body }}</h5>
-            {% for answer in answer_log|get_by_key:question.id %}
-                {{ answer.answer_data.body }} - <span style="color: {% if answer.answer_data.is_right %}green{% else %}red{% endif %}">{{ answer.answer_data.is_right|yesno:'правильный, не правильный' }}</span>
-            {% empty %}
-                <p>Ответ отсутствует</p>
-            {% endfor %}
+    {% for question in question_log %}
+        <hr/>
+        <h5>{{ question.question_data.body }}</h5>
+        {% for answer in answer_log|get_by_key:question.id %}
+            {{ forloop.counter }}) {{ answer.answer_data.body }} - <b style="color: #00dd1c">{{ answer.answer.points }} баллов.</b>
+            </br>
         {% endfor %}
-
-    {% else %}
-        <h3>Просмотр результатов недоступен</h3>
-    {% endif %}
+    {% endfor %}
 
     <hr/>
 

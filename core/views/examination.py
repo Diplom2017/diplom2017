@@ -79,29 +79,15 @@ class UserExaminationProcessView(TemplateView):
                 redirect_to = redirect(reverse(user_examination_process_view, args=[user_examination.examination_id, next_log_id]))
             return redirect_to
 
-        if datetime.datetime.now() > user_examination.must_finished_at:
-            user_examination.finish()
-            messages.success(request, 'Тестирование %s завершено. Закончилось время.' % user_examination.examination.name)
-            return redirect(reverse('category_list_view'))
-
         user_examination_question_log = self.get_user_examination_question_log()
         if user_examination_question_log.user_examination_answer_logs.exists():
             return redirect(reverse(user_examination_process_view, args=[user_examination.examination_id]))
-
-        if user_examination_question_log.started_at is None:
-            user_examination_question_log.started_at = datetime.datetime.now()
-            user_examination_question_log.save()
 
         return super(UserExaminationProcessView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         user_examination_question_log = self.get_user_examination_question_log()
         redirect_to = reverse(user_examination_process_view, args=[self.get_examination().id])
-
-        if request.POST.get('skip'):
-            user_examination_question_log.skipped_at = datetime.datetime.now()
-            user_examination_question_log.save()
-            return redirect(redirect_to)
 
         answers_ids = [int(answer_id) for answer_id in request.POST.getlist('answer_id')]
 
@@ -110,17 +96,7 @@ class UserExaminationProcessView(TemplateView):
 
         question_answers = json.loads(user_examination_question_log.question_answers_data)
 
-        question_answers_ids = [qa['id'] for qa in question_answers]
-        question_right_answers_ids = [qa['id'] for qa in question_answers if qa['is_right'] is True]
-
-        invalid_answers_ids = [answer_id for answer_id in answers_ids if answer_id not in question_answers_ids]
-        if invalid_answers_ids:
-            return redirect(redirect_to)
-
         if len(answers_ids) > len(question_answers):
-            return redirect(redirect_to)
-
-        if len(question_right_answers_ids) == 1 and len(answers_ids) > 1:
             return redirect(redirect_to)
 
         for answer_id in answers_ids:
@@ -134,21 +110,15 @@ class UserExaminationProcessView(TemplateView):
                 answer_obj = None
 
             UserExaminationAnswerLog.objects.create(
-                answer=answer_obj, is_right=answer_id in question_right_answers_ids,
-                user_examination_question_log=user_examination_question_log, answer_data=answer_backuped_data
-            )
-
-        user_examination_question_log.finished_at = datetime.datetime.now()
-        user_examination_question_log.save()
+                answer=answer_obj, user_examination_question_log=user_examination_question_log,
+                answer_data=answer_backuped_data)
 
         return redirect(redirect_to)
 
     def get_title(self):
         user_examination = self.get_user_examination()
-        return 'Тестирование %s, необходимо закончить до %s, осталось %s мин, осталось вопросов: %s' % (
-            user_examination.examination, user_examination.must_finished_at.strftime('%d.%m.%Y %H:%M:%S'),
-            user_examination.get_remaining_minutes(), UserExaminationQuestionLog.get_remains_for_user_examination(user_examination)
-        )
+        return 'Тестирование %s, осталось вопросов: %s' % (
+            user_examination.examination, UserExaminationQuestionLog.get_remains_for_user_examination(user_examination))
 
     def get_context_data(self, **kwargs):
         context = super(UserExaminationProcessView, self).get_context_data(**kwargs)
@@ -159,7 +129,7 @@ class UserExaminationProcessView(TemplateView):
             'user_examination': user_examination,
             'question': json.loads(user_examination_question_log.question_data),
             'answers': json.loads(user_examination_question_log.question_answers_data),
-            'input_type': 'radio' if user_examination_question_log.get_right_answers_count() == 1 else 'checkbox'
+            'input_type': 'checkbox'
         })
         return context
 user_examination_process_view = UserExaminationProcessView.as_view()
@@ -200,20 +170,6 @@ class UserExaminationDetailView(DetailView):
             answer_log_objects[answer_log.user_examination_question_log_id].append(answer_log)
         return answer_log_objects
 
-    def get_answers_stats(self):
-        stats = {
-            'right_answers_count': 0,
-            'invalid_answers_count': 0
-        }
-
-        for answer_log in self.get_answer_log_qs():
-            if answer_log.answer_data['is_right']:
-                stats['right_answers_count'] += 1
-            else:
-                stats['invalid_answers_count'] += 1
-
-        return stats
-
     def get_title(self):
         user_examination = self.get_object()
         return 'Пользователь %s, тестирование %s' % (user_examination.user, user_examination.examination)
@@ -222,8 +178,5 @@ class UserExaminationDetailView(DetailView):
         context = super(UserExaminationDetailView, self).get_context_data(**kwargs)
         context['question_log'] = self.get_question_log()
         context['answer_log'] = self.get_answer_log_for_question_log()
-        context['user_examinations_stats'] = self.get_answers_stats()
-        context['can_view_logs'] = self.object.can_view_logs(self.request.user)
         return context
-
 user_examination_detail_view = UserExaminationDetailView.as_view()

@@ -17,9 +17,7 @@
         <thead>
             <tr>
                 <th>Название</th>
-                <th>Категория</th>
                 <th>Вопросов</th>
-                <th>Минут на выполнение</th>
             </tr>
         </thead>
     <tbody>
@@ -31,13 +29,7 @@
                 <a href="{% url 'examination_update_view' examination.id %}">{{ examination.name }}</a>
             </td>
             <td>
-                {{ examination.category }}
-            </td>
-            <td>
                 {{ examination.questions.count }}
-            </td>
-            <td>
-                {{ examination.minutes_to_pass }}
             </td>
         </tr>
 

@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 
 
-from .models import User, Category, Examination, Question, Answer, UserExamination,\
+from .models import User, Examination, Question, Answer, UserExamination,\
     UserExaminationQuestionLog, UserExaminationAnswerLog
 
 
@@ -12,12 +12,8 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('email', 'username', )
 
 
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', )
-
-
 class ExaminationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category',)
+    list_display = ('name',)
 
 
 class AnswerInline(admin.StackedInline):
@@ -53,7 +49,6 @@ class UserExaminationAnswerLogAdmin(admin.ModelAdmin):
 
 
 admin.site.register(User, UserAdmin)
-admin.site.register(Category, CategoryAdmin)
 admin.site.register(Examination, ExaminationAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Answer, AnswerAdmin)

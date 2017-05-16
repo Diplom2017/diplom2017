@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.contrib import messages
 from django.shortcuts import redirect
 
-from core.forms import ExaminationEditForm, QuestionEditForm, AnswerEditForm, ExaminationSearchForm
+from core.forms import ExaminationEditForm, QuestionEditForm, AnswerEditForm
 from core.models import Examination, Question, Answer
 from core.views.base import CreateOrUpdateView, ListView, ParentListView, ParentCreateOrUpdateView
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -21,12 +21,6 @@ class ExaminationListView(ListView):
         if self.request.GET.get('category'):
             qs = qs.filter(category=self.request.GET['category'])
         return qs
-
-    def get_context_data(self, **kwargs):
-        context = super(ExaminationListView, self).get_context_data(**kwargs)
-        context['form'] = ExaminationSearchForm(self.request.GET or None)
-        return context
-
 examination_list_view = ExaminationListView.as_view()
 
 
@@ -92,7 +86,6 @@ class ExaminationQuestionCreateOrUpdateView(ParentCreateOrUpdateView):
         context = super(ExaminationQuestionCreateOrUpdateView, self).get_context_data(**kwargs)
         context['answers'] = self.get_object().answers.all()
         return context
-
 examination_question_create_or_update_view = ExaminationQuestionCreateOrUpdateView.as_view()
 
 
@@ -139,7 +132,6 @@ class QuestionAnswerCreateOrUpdateView(ParentCreateOrUpdateView):
             self.get_parent_object().examination_id, self.get_parent_object().id
         ])
         return context
-
 question_answer_create_or_update_view = QuestionAnswerCreateOrUpdateView.as_view()
 
 

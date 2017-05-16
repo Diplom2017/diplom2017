@@ -49,7 +49,7 @@
         <thead>
             <tr>
                 <th>Текст ответа</th>
-                <th>Правильность</th>
+                <th>Кол-во баллов</th>
                 <th>Действия</th>
             </tr>
         </thead>
@@ -57,7 +57,7 @@
             {% for answer in answers %}
         <tr>
             <td>{{ answer.body }}</td>
-            <td>{{ answer.is_right|yesno:'правильный, не правильный' }}</td>
+            <td>{{ answer.points }}</td>
             <td><a href="{% url 'question_answer_update_view' question.examination_id question.id answer.id %}">Редактировать</a></td>
         </tr>
         {% endfor %}

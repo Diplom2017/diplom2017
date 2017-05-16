@@ -12,3 +12,8 @@ register = Library()
 def get_by_key(dictionary, key):
     return dictionary.get(key)
 
+
+@register.filter
+def get_by_id(dictionary, key):
+    return dictionary.get(str(key))
+

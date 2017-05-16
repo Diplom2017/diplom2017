@@ -9,7 +9,7 @@ class ExaminationEditForm(forms.ModelForm):
 
     class Meta:
         model = Examination
-        fields = ('name', 'minutes_to_pass', 'category')
+        fields = ('name',)
 
 
 class QuestionEditForm(forms.ModelForm):
@@ -23,8 +23,4 @@ class AnswerEditForm(forms.ModelForm):
 
     class Meta:
         model = Answer
-        fields = ('body', 'is_right')
-
-
-class ExaminationSearchForm(forms.Form):
-    pass
+        fields = ('body', 'points')
