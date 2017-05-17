@@ -1,0 +1,54 @@
+{% extends 'core/base/base_list.html' %}
+
+{% block buttons %}
+    {% load bootstrap3 %}
+    {% endblock buttons %}
+
+{% block table %}
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Отчество</th>
+                <th>Дата последнего учёта</th>
+                <th>Дата следующего учёта</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for user in users %}
+
+            <tr>
+                <td>
+                    {{ user.name }}
+                </td>
+                <td>
+                    {{ user.last_name}}
+                </td>
+                <td>
+                    {{ user.second_name}}
+                </td>
+                <td>
+                    {{ user.last_test_time|default:'Учёт не проходил'}}
+                </td>
+                <td>
+                    {{ user.next_test_time|default:'Дата следующего учёта не установлена'}}
+                </td>
+                <td>
+                    {% if user.next_test_time %}
+                        <a class="btn btn-warning center-block" href="{% url 'adm_user_time_update_view' user.id %}">Редактировать</a>
+                    {% else %}
+                        <a class="btn btn-warning center-block" href="{% url 'adm_user_time_update_view' user.id %}">Установить</a>
+                    {% endif %}
+                </td>
+
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock table %}

@@ -17,6 +17,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
     second_name = models.CharField(max_length=150, verbose_name='Отчество')
+
+    last_test_time = models.DateField(blank=True, null=True, verbose_name='Дата последнего учёта')
+    next_test_time = models.DateField(blank=True, null=True, verbose_name='Дата следующего учёта')
+
     is_staff = models.BooleanField(default=False, verbose_name='Доступ в административную часть')
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now=True)
@@ -141,6 +145,7 @@ class UserExamination(models.Model):
     def finish(self):
         self.finished_at = datetime.datetime.now()
         self.calculate_points(commit=False)
+        self.user.last_test_time = datetime.date.today()
         self.save()
 
     def start(self):
@@ -210,4 +215,3 @@ class UserExaminationAnswerLog(models.Model):
     class Meta:
         verbose_name = 'Лог ответов на вопросы'
         verbose_name_plural = 'Лог ответов на вопросы'
-

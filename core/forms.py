@@ -2,7 +2,7 @@
 from django import forms
 
 
-from core.models import Examination, Question, Answer
+from core.models import Examination, Question, Answer, User
 
 
 class ExaminationEditForm(forms.ModelForm):
@@ -24,3 +24,10 @@ class AnswerEditForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = ('body', 'points')
+
+
+class UserEditForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ('next_test_time',)

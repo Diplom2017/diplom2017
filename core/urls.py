@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url
 
 from core.views import examinations, examination, reports
+from core.views.management import management_examination_time
 from core.views.management import management_examinations
 
 urlpatterns = [
@@ -24,4 +25,7 @@ urlpatterns = [
     url(r'^adm/examination/(?P<examination_id>\d+)/$', management_examinations.examination_create_or_update_view, name='examination_update_view'),
     url(r'^adm/examination/create/$', management_examinations.examination_create_or_update_view, name='examination_create_view'),
     url(r'^adm/examination/$', management_examinations.examination_list_view, name='adm_examination_list_view'),
+
+    url(r'^adm/users/$', management_examination_time.user_list_view, name='adm_user_list_view'),
+    url(r'^adm/users/(?P<user_id>\d+)/$', management_examination_time.user_time_update_view, name='adm_user_time_update_view'),
 ]

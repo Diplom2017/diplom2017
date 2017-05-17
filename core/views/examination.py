@@ -21,7 +21,7 @@ class UserExaminationListView(ListView):
     model = UserExamination
     context_object_name = 'user_examinations'
     template_name = 'core/user_examinations.html'
-    title = 'Список пройденных тестирований'
+    title = 'Список проведённых учётов'
 
     def get_queryset(self):
         qs = super(UserExaminationListView, self).get_queryset()

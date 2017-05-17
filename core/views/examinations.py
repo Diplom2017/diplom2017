@@ -10,4 +10,9 @@ class ExaminationListView(ListView):
     context_object_name = 'examinations'
     template_name = 'core/examinations.html'
     title = 'Список доступных тестирований'
+
+    def get_queryset(self):
+        qs = super(ExaminationListView, self).get_queryset()
+        return qs
+
 examination_list_view = ExaminationListView.as_view()
