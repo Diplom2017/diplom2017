@@ -16,7 +16,7 @@ class QuestionEditForm(forms.ModelForm):
 
     class Meta:
         model = Question
-        fields = ('body',)
+        fields = ('body', 'sum_points')
 
 
 class AnswerEditForm(forms.ModelForm):

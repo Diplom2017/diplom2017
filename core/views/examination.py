@@ -25,6 +25,7 @@ class UserExaminationListView(ListView):
 
     def get_queryset(self):
         qs = super(UserExaminationListView, self).get_queryset()
+        qs = qs.order_by('-finished_at')
         if not self.request.user.is_superuser or not self.request.user.is_staff:
             qs.filter(user=self.request.user)
         return qs
@@ -129,8 +130,7 @@ class UserExaminationProcessView(TemplateView):
             'user_examination': user_examination,
             'question': json.loads(user_examination_question_log.question_data),
             'answers': json.loads(user_examination_question_log.question_answers_data),
-            'input_type': 'checkbox'
-        })
+            'input_type': 'checkbox' if user_examination_question_log.question.sum_points else 'radio'})
         return context
 user_examination_process_view = UserExaminationProcessView.as_view()
 

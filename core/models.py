@@ -71,6 +71,7 @@ class Examination(models.Model):
 class Question(models.Model):
     examination = models.ForeignKey(Examination, related_name='questions', verbose_name='Тестирование')
     body = models.TextField(verbose_name='Текст')
+    sum_points = models.BooleanField(verbose_name='Суммировать баллы')
 
     def __unicode__(self):
         return self.body
@@ -145,8 +146,9 @@ class UserExamination(models.Model):
     def finish(self):
         self.finished_at = datetime.datetime.now()
         self.calculate_points(commit=False)
-        self.user.last_test_time = datetime.date.today()
         self.save()
+        self.user.last_test_time = datetime.date.today()
+        self.user.save()
 
     def start(self):
         self.started_at = datetime.datetime.now()
@@ -179,7 +181,6 @@ class UserExamination(models.Model):
 class UserExaminationQuestionLog(models.Model):
     user_examination = models.ForeignKey(UserExamination, related_name='logs')
     question = models.ForeignKey(Question, on_delete=DO_NOTHING, related_name='logs')
-
     question_data = JSONField(default={})
     question_answers_data = JSONField(default=[])
 
