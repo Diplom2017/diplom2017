@@ -100,6 +100,38 @@ class Answer(models.Model):
         verbose_name_plural = 'Ответы на вопросы'
 
 
+class TextQuestion(models.Model):
+    examination = models.ForeignKey(Examination, related_name='text_questions', verbose_name='Тестирование')
+    body = models.TextField(verbose_name='Текст')
+
+    def __unicode__(self):
+        return self.body
+
+    def __str__(self):
+        return self.body
+
+    class Meta:
+        verbose_name = 'Не стандартный вопрос'
+        verbose_name_plural = 'Не стандартные вопросы'
+
+
+class TextUserAnswer(models.Model):
+    text_question = models.ForeignKey(TextQuestion, related_name='answers', verbose_name='Вопрос')
+    user_examination = models.ForeignKey('UserExamination', related_name='text_answers')
+    body = models.TextField(verbose_name='Текст')
+    points = models.PositiveSmallIntegerField(verbose_name='Кол-во баллов')
+
+    def __unicode__(self):
+        return '[%s] %s' % (self.id, self.body)
+
+    def __str__(self):
+        return '[%s] %s' % (self.id, self.body)
+
+    class Meta:
+        verbose_name = 'Текстовый ответ'
+        verbose_name_plural = 'Текстовые ответы'
+
+
 class UserExamination(models.Model):
     examination = models.ForeignKey(Examination, related_name='user_examinations', verbose_name='Тестирование')
     user = models.ForeignKey(User, related_name='user_examinations', verbose_name='Пользователь')

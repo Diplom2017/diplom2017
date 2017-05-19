@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 from django.contrib import messages
 from django.shortcuts import redirect
 
-from core.forms import ExaminationEditForm, QuestionEditForm, AnswerEditForm
-from core.models import Examination, Question, Answer
+from core.forms import ExaminationEditForm, QuestionEditForm, AnswerEditForm, TextQuestionEditForm
+from core.models import Examination, Question, Answer, TextQuestion
 from core.views.base import CreateOrUpdateView, ListView, ParentListView, ParentCreateOrUpdateView
 from django.core.urlresolvers import reverse_lazy, reverse
 
@@ -15,12 +15,6 @@ class ExaminationListView(ListView):
     context_object_name = 'examinations'
     template_name = 'core/management/examinations.html'
     title = 'Управление тестированиями'
-
-    def get_queryset(self):
-        qs = super(ExaminationListView, self).get_queryset()
-        if self.request.GET.get('category'):
-            qs = qs.filter(category=self.request.GET['category'])
-        return qs
 examination_list_view = ExaminationListView.as_view()
 
 
@@ -140,4 +134,53 @@ def question_answer_delete_view(request, examination_id, question_id, answer_id)
     Answer.objects.get(question=question, id=answer_id).delete()
     messages.success(request, 'Ответ успешно удален')
     return redirect(reverse('examination_question_update_view', args=[examination_id, question_id]))
+
+
+class ExaminationTextQuestionListView(ParentListView):
+    model = TextQuestion
+
+    parent_model = Examination
+    parent_pk_url_kwarg = 'examination_id'
+
+    context_object_name = 'questions'
+    context_parent_object_name = 'examination'
+
+    template_name = 'core/management/text_questions.html'
+
+    def get_title(self):
+        return 'Управление текстовыми вопросами тестирования «%s»' % self.get_parent_object()
+examination_text_question_list_view = ExaminationTextQuestionListView.as_view()
+
+
+class ExaminationTextQuestionCreateOrUpdateView(ParentCreateOrUpdateView):
+    model = TextQuestion
+    pk_url_kwarg = 'question_id'
+
+    parent_model = Examination
+    parent_pk_url_kwarg = 'examination_id'
+    parent_field_name = 'examination'
+    context_parent_object_name = 'examination'
+    context_object_name = 'question'
+
+    template_name = 'core/management/text_question_edit.html'
+
+    form_class_create = TextQuestionEditForm
+    form_class_update = TextQuestionEditForm
+
+    def get_title(self):
+        if self.is_create():
+            return 'Создание текстового вопроса для тестирования «%s»' % self.get_parent_object()
+        else:
+            return 'Редактирование текстового вопроса для тестирования «%s»' % self.get_parent_object()
+
+    def get_success_url(self):
+        return reverse_lazy(examination_text_question_create_or_update_view, args=[self.get_parent_object().id, self.get_object().id])
+examination_text_question_create_or_update_view = ExaminationTextQuestionCreateOrUpdateView.as_view()
+
+
+def examination_text_question_delete_view(request, examination_id, question_id):
+    examination = Examination.objects.get(id=examination_id)
+    TextQuestion.objects.get(id=question_id, examination=examination).delete()
+    messages.success(request, 'Вопрос успешно удален')
+    return redirect(reverse(examination_question_list_view, args=[examination.id]))
 

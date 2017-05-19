@@ -2,7 +2,7 @@
 from django import forms
 
 
-from core.models import Examination, Question, Answer, User
+from core.models import Examination, Question, Answer, User, TextQuestion
 
 
 class ExaminationEditForm(forms.ModelForm):
@@ -19,6 +19,13 @@ class QuestionEditForm(forms.ModelForm):
         fields = ('body', 'sum_points')
 
 
+class TextQuestionEditForm(forms.ModelForm):
+
+    class Meta:
+        model = TextQuestion
+        fields = ('body',)
+
+
 class AnswerEditForm(forms.ModelForm):
 
     class Meta:
@@ -31,3 +38,8 @@ class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('next_test_time',)
+
+        widgets = {
+            'next_test_time': forms.DateInput(attrs={'class': 'datetimepicker'}),
+
+        }

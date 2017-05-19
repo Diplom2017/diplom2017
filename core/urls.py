@@ -26,6 +26,16 @@ urlpatterns = [
     url(r'^adm/examination/create/$', management_examinations.examination_create_or_update_view, name='examination_create_view'),
     url(r'^adm/examination/$', management_examinations.examination_list_view, name='adm_examination_list_view'),
 
+    url(r'^adm/examination/(?P<examination_id>\d+)/textquestions/(?P<question_id>\d+)/delete/$',
+        management_examinations.examination_text_question_delete_view, name='examination_text_question_delete_view'),
+    url(r'^adm/examination/(?P<examination_id>\d+)/textquestions/(?P<question_id>\d+)/$',
+        management_examinations.examination_text_question_create_or_update_view, name='examination_text_question_update_view'),
+    url(r'^adm/examination/(?P<examination_id>\d+)/textquestions/create/$',
+        management_examinations.examination_text_question_create_or_update_view, name='examination_text_question_create_view'),
+    url(r'^adm/examination/(?P<examination_id>\d+)/textquestions/$', management_examinations.examination_text_question_list_view,
+        name='examination_text_question_list_view'),
+
+
     url(r'^adm/users/$', management_examination_time.user_list_view, name='adm_user_list_view'),
     url(r'^adm/users/(?P<user_id>\d+)/$', management_examination_time.user_time_update_view, name='adm_user_time_update_view'),
 ]
