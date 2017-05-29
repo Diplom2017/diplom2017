@@ -23,7 +23,7 @@
                     {{ examination.name }}
                 </td>
                 <td>
-                    {{ examination.questions.count }}
+                    {{ examination.get_all_question_count }}
                 </td>
                 <td>
                     <a id="start" class="btn btn-success center-block"

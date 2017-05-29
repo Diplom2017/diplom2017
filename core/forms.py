@@ -2,7 +2,7 @@
 from django import forms
 
 
-from core.models import Examination, Question, Answer, User, TextQuestion
+from core.models import Examination, Question, Answer, User, TextQuestion, TextUserAnswer
 
 
 class ExaminationEditForm(forms.ModelForm):
@@ -30,6 +30,13 @@ class AnswerEditForm(forms.ModelForm):
 
     class Meta:
         model = Answer
+        fields = ('body', 'points')
+
+
+class TextUserAnswerEditForm(forms.ModelForm):
+
+    class Meta:
+        model = TextUserAnswer
         fields = ('body', 'points')
 
 

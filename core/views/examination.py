@@ -9,11 +9,13 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.forms import model_to_dict
 from django.shortcuts import redirect, render
-from core.views.base import ListView, DetailView, TemplateView
+
+from core.forms import AnswerEditForm, TextUserAnswerEditForm
+from core.views.base import ListView, DetailView, TemplateView, ParentCreateOrUpdateView
 
 from core.models import (
     UserExamination, UserExaminationQuestionLog, UserExaminationAnswerLog, User, Question, Answer,
-    Examination)
+    Examination, TextUserAnswer, TextQuestion)
 from random import random, shuffle
 
 
@@ -73,9 +75,13 @@ class UserExaminationProcessView(TemplateView):
             next_log_id = UserExaminationQuestionLog.get_next_id(user_examination=user_examination)
 
             if next_log_id is None:
-                user_examination.finish()
-                messages.success(request, 'Тестирование %s завершено.' % user_examination.examination.name)
-                redirect_to = redirect(reverse('examination_list_view'))
+                if user_examination.get_next_text_question():
+                    text_question_id = user_examination.get_next_text_question()
+                    redirect_to = redirect((reverse('user_text_answer_create_view', args=[user_examination.id, text_question_id])))
+                else:
+                    user_examination.finish()
+                    messages.success(request, 'Тестирование %s завершено.' % user_examination.examination.name)
+                    redirect_to = redirect(reverse('examination_list_view'))
             else:
                 redirect_to = redirect(reverse(user_examination_process_view, args=[user_examination.examination_id, next_log_id]))
             return redirect_to
@@ -118,8 +124,7 @@ class UserExaminationProcessView(TemplateView):
 
     def get_title(self):
         user_examination = self.get_user_examination()
-        return 'Тестирование %s, осталось вопросов: %s' % (
-            user_examination.examination, UserExaminationQuestionLog.get_remains_for_user_examination(user_examination))
+        return 'Тестирование %s' % (user_examination.examination)
 
     def get_context_data(self, **kwargs):
         context = super(UserExaminationProcessView, self).get_context_data(**kwargs)
@@ -178,5 +183,35 @@ class UserExaminationDetailView(DetailView):
         context = super(UserExaminationDetailView, self).get_context_data(**kwargs)
         context['question_log'] = self.get_question_log()
         context['answer_log'] = self.get_answer_log_for_question_log()
+        context['text_answers'] = TextUserAnswer.objects.filter(user_examination=self.get_object())
         return context
 user_examination_detail_view = UserExaminationDetailView.as_view()
+
+
+def user_text_answer_create_view(request, user_examination_id, text_question_id):
+    user_examination = UserExamination.objects.get(id=user_examination_id)
+    text_question = TextQuestion.objects.get(id=text_question_id)
+
+    form = TextUserAnswerEditForm(request.POST or None)
+
+    if form.is_valid():
+        TextUserAnswer.objects.create(text_question=text_question, user_examination=user_examination,
+                                      body=form.cleaned_data['body'], points=form.cleaned_data['points'])
+
+        if 'another_one' in request.POST:
+            return redirect(reverse('user_text_answer_create_view', args=[user_examination_id, text_question_id]))
+
+        if user_examination.get_next_text_question():
+            next_id = user_examination.get_next_text_question()
+            return redirect(reverse('user_text_answer_create_view', args=[user_examination_id, next_id]))
+
+        else:
+            return redirect(reverse('user_examination_answer_view', args=[user_examination.examination_id]))
+
+    context = {
+        'form': form,
+        'text_question': text_question,
+    }
+
+    return render(request, 'core/text_question_answer.html', context)
+

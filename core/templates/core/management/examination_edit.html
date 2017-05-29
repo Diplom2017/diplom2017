@@ -10,6 +10,9 @@
         <a href="{% url 'examination_question_list_view' examination.id %}" class="btn btn-warning">
             Перейти к вопросам тестирования {% bootstrap_icon "arrow-right" %}
         </a>
+        <a href="{% url 'examination_text_question_list_view' examination.id %}" class="btn btn-warning">
+            Перейти к текстовым вопросам тестирования {% bootstrap_icon "arrow-right" %}
+        </a>
         {% endif %}
     {% endbuttons %}
 {% endblock buttons %}

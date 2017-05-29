@@ -5,7 +5,7 @@ from django.contrib import admin
 
 
 from .models import User, Examination, Question, Answer, UserExamination,\
-    UserExaminationQuestionLog, UserExaminationAnswerLog
+    UserExaminationQuestionLog, UserExaminationAnswerLog, TextQuestion, TextUserAnswer
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -52,6 +52,8 @@ admin.site.register(User, UserAdmin)
 admin.site.register(Examination, ExaminationAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Answer, AnswerAdmin)
+admin.site.register(TextQuestion)
+admin.site.register(TextUserAnswer)
 admin.site.register(UserExamination, UserExaminationAdmin)
 admin.site.register(UserExaminationQuestionLog, UserExaminationQuestionLogAdmin)
 admin.site.register(UserExaminationAnswerLog, UserExaminationAnswerLogAdmin)

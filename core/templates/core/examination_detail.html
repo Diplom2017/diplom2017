@@ -39,6 +39,16 @@
         {% endfor %}
     {% endfor %}
 
+    </br>
+
+    <h3>Письменные ответы пользователя</h3>
+
+    {% for answer in text_answers %}
+        <hr/>
+        <h5>{{ answer.text_question.body }}</h5>
+        {{ answer.body }} - <b style="color: #00dd1c">{{ answer.points }} баллов.</b>
+    {% endfor %}
+
     <hr/>
 
 {% endblock content %}

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Система тестирования персонала</title>
+    <title></title>
 
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}core/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}core/css/style.css"/>
@@ -21,16 +21,21 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav" style="width: 100%">
                 <li class=""><a href="{% url 'examination_list_view' %}">Главная</a></li>
-                <li class=""><a href="{% url 'high_user_examination_view' %}">Рейтинг преподователей</a></li>
                 <li class=""><a href="{% url 'user_examination_list_view' %}">Результаты</a></li>
-                    {% if request.user.is_staff %}
-                    <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Управление <span class="caret"></span></a>
-                      <ul class="dropdown-menu">
-                          <li><a href="{% url 'adm_examination_list_view' %}">Тестирование</a></li>
-                          <li><a href="{% url 'adm_user_list_view' %}">Время учёта</a></li>
-                      </ul>
-                    </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Отчёты <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li class=""><a href="{% url 'high_user_examination_view' %}">Рейтинг</a></li>
+                  </ul>
+                </li>
+                {% if request.user.is_staff %}
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Управление <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="{% url 'adm_examination_list_view' %}">Тестирование</a></li>
+                      <li><a href="{% url 'adm_user_list_view' %}">Время учёта</a></li>
+                  </ul>
+                </li>
                 {% endif %}
                 <li class="dropdown pull-right">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">

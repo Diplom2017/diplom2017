@@ -15,7 +15,7 @@ class UserListView(ListView):
     model = User
     context_object_name = 'users'
     template_name = 'core/management/user_list.html'
-    title = 'Список преподователей'
+    title = 'Список пользователей'
 user_list_view = UserListView.as_view()
 
 

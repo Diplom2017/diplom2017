@@ -67,6 +67,9 @@ class Examination(models.Model):
     def __str__(self):
         return self.name
 
+    def get_all_question_count(self):
+        return self.questions.count() + self.text_questions.count()
+
 
 class Question(models.Model):
     examination = models.ForeignKey(Examination, related_name='questions', verbose_name='Тестирование')
@@ -104,15 +107,15 @@ class TextQuestion(models.Model):
     examination = models.ForeignKey(Examination, related_name='text_questions', verbose_name='Тестирование')
     body = models.TextField(verbose_name='Текст')
 
+    class Meta:
+        verbose_name = 'Не стандартный вопрос'
+        verbose_name_plural = 'Не стандартные вопросы'
+
     def __unicode__(self):
         return self.body
 
     def __str__(self):
         return self.body
-
-    class Meta:
-        verbose_name = 'Не стандартный вопрос'
-        verbose_name_plural = 'Не стандартные вопросы'
 
 
 class TextUserAnswer(models.Model):
@@ -121,15 +124,15 @@ class TextUserAnswer(models.Model):
     body = models.TextField(verbose_name='Текст')
     points = models.PositiveSmallIntegerField(verbose_name='Кол-во баллов')
 
+    class Meta:
+        verbose_name = 'Текстовый ответ'
+        verbose_name_plural = 'Текстовые ответы'
+
     def __unicode__(self):
         return '[%s] %s' % (self.id, self.body)
 
     def __str__(self):
         return '[%s] %s' % (self.id, self.body)
-
-    class Meta:
-        verbose_name = 'Текстовый ответ'
-        verbose_name_plural = 'Текстовые ответы'
 
 
 class UserExamination(models.Model):
@@ -175,6 +178,12 @@ class UserExamination(models.Model):
     def get_for_user(cls, user, **kwargs):
         return cls.objects.filter(user=user, **kwargs)
 
+    def get_next_text_question(self):
+        if self.examination.text_questions.exclude(answers__user_examination=self):
+            return self.examination.text_questions.exclude(answers__user_examination=self)[0].id
+        else:
+            return None
+
     def finish(self):
         self.finished_at = datetime.datetime.now()
         self.calculate_points(commit=False)
@@ -201,6 +210,10 @@ class UserExamination(models.Model):
                 points_user_count += answer.answer.points
 
             points += points_user_count
+
+        for text_question in self.examination.text_questions.all():
+            for text_answer in text_question.answers.filter(user_examination=self):
+                points += text_answer.points
 
         self.points = points
 

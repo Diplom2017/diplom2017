@@ -1,0 +1,90 @@
+{% extends 'core/base/base_list.html' %}
+
+{% block buttons %}
+    {% load bootstrap3 %}
+    {% endblock buttons %}
+
+{% block table %}
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Отчество</th>
+                <th>Кол-во баллов</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for user in users %}
+
+            <tr>
+                <td>
+                    {{ user.name }}
+                </td>
+                <td>
+                    {{ user.last_name }}
+                </td>
+                <td>
+                    {{ user.second_name }}
+                </td>
+                <td>
+                    {{ user.get_max_points }}
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+
+{% endblock table %}
+
+{% block js %}
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script>
+    $(document).ready(function () {
+
+        var data = JSON.parse('{{ data|safe }}');
+
+        $('#container').highcharts({
+            chart: {
+        type: 'column'
+        },
+        title: {
+            text: ''
+        },
+
+        xAxis: {
+            type: 'category',
+            labels: {
+                rotation: -45,
+                style: {
+                    fontSize: '13px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Кол-во баллов'
+            }
+        },
+
+        series: [{
+            name: ' ',
+            data: data
+        }]
+
+        });
+        });
+
+    </script>
+{% endblock js %}

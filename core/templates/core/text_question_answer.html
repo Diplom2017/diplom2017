@@ -1,0 +1,17 @@
+{% extends 'core/base/base_edit.html' %}
+
+{% block pre_form %}
+    {{ text_question.body }}
+{% endblock pre_form %}
+
+{% block buttons %}
+    {% load bootstrap3 %}
+    {% buttons layout='horizontal' %}
+        <button type="submit" class="btn btn-success">
+            {% bootstrap_icon "floppy-save" %} Сохранить
+        </button>
+        <button type="submit" name="another_one" class="btn btn-success">
+            {% bootstrap_icon "floppy-save" %} Сохранить и добавить еще
+        </button>
+    {% endbuttons %}
+{% endblock buttons %}
